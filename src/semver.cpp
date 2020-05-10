@@ -10,7 +10,7 @@ namespace gitsemver {
     std::string Semver::nextVersion() const {
         auto tag = gitProvider_->lastReleasedTag();
         if (tag == providers::NO_GIT_TAG) {
-            return DEFAULT_VERSION;
+            return toSemanticVersionWithPrefix(DEFAULT_VERSION);
         }
 
         if (gitProvider_->isTag()) {
@@ -22,10 +22,13 @@ namespace gitsemver {
 
         auto currVersion = providers::extractSemanticVersion(tag.tagName());
         auto newVersion = incrementVersion(currVersion);
+        return toSemanticVersionWithPrefix(newVersion);
+    }
+
+    std::string Semver::toSemanticVersionWithPrefix(const std::string& version) const {
         auto currBranch = gitProvider_->getCurrentBranch();
         auto latestCommit = gitProvider_->getLatestCommit().substr(0, shaLength_);
-
-        return newVersion + "-" + currBranch + "-" + latestCommit;
+        return version + "-" + currBranch + "-" + latestCommit;
     }
 
     std::string Semver::incrementVersion(const std::string& version) const {

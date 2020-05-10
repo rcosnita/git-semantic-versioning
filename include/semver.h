@@ -2,7 +2,6 @@
 #define GITSEMVER_INCLUDE_SEMVER_H_
 
 #include <exception>
-
 #include <providers/provider.h>
 
 namespace gitsemver {
@@ -33,6 +32,11 @@ namespace gitsemver {
          * Increments the patch version by 1 and returns the new version.
          */
         std::string incrementVersion(const std::string& version) const;
+
+        /**
+         * Appends the branch name and the git commit shorten sha as suffix to the identified semantic version.
+         */
+        std::string toSemanticVersionWithPrefix(const std::string& version) const;
 
     private:
         providers::GitProvider* gitProvider_;
