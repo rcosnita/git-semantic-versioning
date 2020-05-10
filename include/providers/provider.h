@@ -10,6 +10,19 @@
 namespace gitsemver {
 namespace providers {
     static const int SHA_NUM_OF_CHARS = 40;
+    static const std::string REF_HEADS_PREFIX = "ref/heads/";
+    static const size_t REF_HEADS_PREFIX_LENGTH = REF_HEADS_PREFIX.length();
+
+    static const std::string REF_TAGS_PREFIX = "ref/tags/";
+    static const size_t REF_TAGS_PREFIX_LENGTH = REF_TAGS_PREFIX.length();
+
+    /**
+     * Detemines if the given tag name describes a semantic version or not. We support the following conventions:
+     * 
+     * <prefix><semver>-<suffix>
+     * If the given string follows the above convention this function will return true. Otherwise it will be false.
+     */
+    std::string extractSemanticVersion(const std::string& tagName);
 
     /**
      * GitTag provides a simple model for describing a git tag.
@@ -17,11 +30,12 @@ namespace providers {
     class GitTag {
     public:
         template<typename T = std::string>
-        GitTag(T tagName, T lastCommitSha, T authorName, T authorEmail) noexcept :
+        GitTag(T tagName, T lastCommitSha, T authorName, T authorEmail, int64_t time) noexcept :
             tagName_(std::forward<T>(tagName)),
             lastCommitSha_(std::forward<T>(lastCommitSha)),
             authorName_(std::forward<T>(authorName)),
-            authorEmail_(std::forward<T>(authorEmail)) {
+            authorEmail_(std::forward<T>(authorEmail)),
+            time_(time) {
 
         }
 
@@ -33,6 +47,10 @@ namespace providers {
 
         std::string authorEmail() const noexcept;
 
+        int64_t time() const noexcept;
+
+        bool operator==(const GitTag& t);
+
         friend std::ostream& operator<<(std::ostream& os, const GitTag& tag);
 
     private:
@@ -40,7 +58,13 @@ namespace providers {
         std::string lastCommitSha_;
         std::string authorName_;
         std::string authorEmail_;
+        int64_t time_;
     };
+
+    /**
+     * Provides a simple placeholder for signaling a no tag situation.
+     */
+    static const GitTag NO_GIT_TAG{"", "", "", "", 0};
 
     /**
      * GitProvider provides a simple contract for working interacting with the git repositories.
@@ -55,7 +79,7 @@ namespace providers {
         }
 
         /**
-         * Returns a list of available tags ordered by creation timestamp.
+         * Returns a list of available tags.
          */
         virtual TagsCollection listTags() = 0;
 
@@ -64,11 +88,27 @@ namespace providers {
          */
         GitTag lastReleasedTag();
 
+        /**
+         * Determines if the current head is a tag or not.
+         */
+        virtual bool isTag() = 0;
+
+        /**
+         * Retrieves the name of the current branch for the underlining repository.
+         */
+        virtual std::string getCurrentBranch() const = 0;
+
+        /**
+         * Retrieves the latest commit sha from the underlining repository head.
+         */
+        virtual std::string getLatestCommit() const = 0;
+
     protected:
         /**
          * Each specific provider will implement this in order to initialise all required resources.
          */
         virtual void init() = 0;
+
     protected:
         std::string repositoryName_;
     };

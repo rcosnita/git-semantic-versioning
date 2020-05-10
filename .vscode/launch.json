@@ -14,7 +14,7 @@
             "cwd": "${workspaceFolder}",
             "environment": [{
                 "name": "LD_LIBRARY_PATH",
-                "value": "${workspaceFolder}/build/lib/libgit2"
+                "value": "${workspaceFolder}/build/lib/libgit2:${workspaceFolder}/build/lib/spdlog"
             }],
             "externalConsole": false,
             "MIMode": "lldb",

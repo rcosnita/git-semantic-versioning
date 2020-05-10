@@ -12,6 +12,7 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 file(GLOB SOURCES "src/*.cpp" "src/**/*.cpp")
 
 add_subdirectory(lib/libgit2)
+set(SPDLOG_BUILD_SHARED ON)
 add_subdirectory(lib/spdlog)
 add_executable(git_semver ${SOURCES})
 target_link_libraries(git_semver git2 spdlog)
