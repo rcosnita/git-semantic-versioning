@@ -1,6 +1,5 @@
 #include <stdexcept>
 
-
 #include <providers/provider.h>
 
 namespace gitsemver {
