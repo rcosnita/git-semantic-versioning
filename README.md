@@ -5,3 +5,17 @@ The command line currently supports the following git versioning schemes:
 
 * [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
 * [Github flow](https://guides.github.com/introduction/flow/)
+
+# Prerequisites
+
+* CMake 3.17
+* gcc / clang compiler versions supporting C++17 at least (e.g clang 11.0.3).
+* Openssl 1.x (please set the location using OPENSSL_ROOT_DIR)
+
+# Getting started
+
+```
+cd <workspace>/build
+OPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2s cmake ../
+make -j8
+```
