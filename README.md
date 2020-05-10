@@ -10,12 +10,22 @@ The command line currently supports the following git versioning schemes:
 
 * CMake 3.17
 * gcc / clang compiler versions supporting C++17 at least (e.g clang 11.0.3).
-* Openssl 1.x (please set the location using OPENSSL_ROOT_DIR)
+* Openssl 1.x
 
 # Getting started
 
-```
+```bash
 cd <workspace>/build
-OPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2s cmake ../
+cmake ../
+make -j8
+cd ../
+./build/git_semver -repository ./ -shalength 10
+```
+
+## Build for production
+
+```bash
+cd <workspace>/build
+cmake -DCMAKE_BUILD_TYPE=release ../
 make -j8
 ```
