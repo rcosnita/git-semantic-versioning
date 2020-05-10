@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 set(CMAKE_GENERATOR make)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_CXX_FLAGS "-Wc++11-extension -std=c++2a")
 enable_language(CXX)
 
 project(git-semantic-versioning)
