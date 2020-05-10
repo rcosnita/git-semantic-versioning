@@ -1,11 +1,11 @@
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
 
 #include <git2.h>
+#include <spdlog/spdlog.h>
 #include <providers/provider.h>
 
 namespace gitsemver {
@@ -18,14 +18,14 @@ namespace providers {
         template<typename T = std::string>
         Git2(T&& repositoryName) : GitProvider(std::forward<T>(repositoryName)) {
             git_libgit2_init();
-            std::cout << "libgit2 initialised successfully." << std::endl;
+            spdlog::debug("libgit2 initialised successfully.");
         }
 
         virtual ~Git2() noexcept {
-            std::cout << "closing repository " << repositoryName_ << std::endl;
+            spdlog::debug("closing repository {}", repositoryName_);
             git_repository_free(underliningRepo_);
             git_libgit2_shutdown();
-            std::cout << "libgit2 shutdown successfully." << std::endl;
+            spdlog::debug("libgit2 shutdown successfully.");
         }
 
         TagsCollection listTags() override {
@@ -58,7 +58,7 @@ namespace providers {
     protected:
         void init() override {
             auto repoName = repositoryName_.c_str();
-            std::cout << "Opening repository: " << repoName << std::endl;
+            spdlog::debug("Opening repository {}", repoName);
             int errCode = git_repository_open(&underliningRepo_, repoName);
             throwIfGit2Error(errCode);
         }
