@@ -55,6 +55,56 @@ namespace providers {
             return tags;
         }
 
+        std::string getCurrentBranch() const override {
+            git_reference* head;
+            throwIfGit2Error(git_repository_head(&head, underliningRepo_));
+            auto headPtr = createAutoDeleter(head, [](git_reference* head) {
+                git_reference_free(head);
+            });
+
+            if (git_reference_is_branch(head)) {
+                std::string branchName = git_reference_name(head);
+                return branchName.replace(branchName.begin(), branchName.begin() + REF_HEADS_PREFIX_LENGTH + 1, "");
+            }
+
+            return "";
+        }
+
+        std::string getLatestCommit() const override {
+            git_reference* head;
+            throwIfGit2Error(git_repository_head(&head, underliningRepo_));
+            auto headPtr = createAutoDeleter(head, [](git_reference* h) {
+                git_reference_free(h);
+            });
+
+            auto oid = git_reference_target(head);
+            char commitNumber[SHA_NUM_OF_CHARS];
+            std::string sha = git_oid_tostr(commitNumber, SHA_NUM_OF_CHARS, oid);
+            return std::move(sha);
+        }
+
+        bool isTag() override {
+            git_reference* head;
+            throwIfGit2Error(git_repository_head(&head, underliningRepo_));
+            auto headPtr = createAutoDeleter(head, [](git_reference* h) {
+                git_reference_free(h);
+            });
+
+            auto refName = git_reference_name(head);
+            git_oid oid;
+            throwIfGit2Error(git_reference_name_to_id(&oid, underliningRepo_, refName));
+
+            char commitNumber[SHA_NUM_OF_CHARS];
+            std::string sha = git_oid_tostr(commitNumber, SHA_NUM_OF_CHARS, &oid);
+            auto tags = listTags();
+            auto it = std::find_if(tags.begin(), tags.end(), [&sha](const GitTag& t) {
+                return t.lastCommitSha() == sha;
+            });
+
+            spdlog::debug("Tag name is: {}", it->tagName());
+            return it != tags.end();
+        }
+
     protected:
         void init() override {
             auto repoName = repositoryName_.c_str();
@@ -103,7 +153,7 @@ namespace providers {
             std::string authorName = author->name;
             std::string authorEmail = author->email;
 
-            return GitTag{tag, sha, authorName, authorEmail};
+            return GitTag{tag, sha, authorName, authorEmail, author->when.time};
         }
 
         /**
@@ -122,7 +172,7 @@ namespace providers {
             std::string authorName = author->name;
             std::string authorEmail = author->email;
 
-            return GitTag{tag, sha, authorName, authorEmail};
+            return GitTag{tag, sha, authorName, authorEmail, author->when.time};
         }
 
         /**
