@@ -101,7 +101,10 @@ namespace providers {
                 return t.lastCommitSha() == sha;
             });
 
-            spdlog::debug("Tag name is: {}", it->tagName());
+            if (it != tags.end()) {
+                spdlog::debug("Tag name is: {}", it->tagName());
+            }
+
             return it != tags.end();
         }
 
