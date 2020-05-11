@@ -21,8 +21,17 @@ jobs:
       run: docker build . --tag rcosnita/git-semantic-versioning:latest
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-    - name: Push the tagged Docker image
-      run: docker push rcosnita/git-semantic-versioning:latest
+    - name: Build the Docker semver image.
+      run: |
+        mkdir gitsemver_tool
+        docker run -i --rm \
+          -v $(pwd)/gitsemver_tool:/home/gitsemver_tool:rw \
+          --entrypoint "/bin/sh" \
+          rcosnita/git-semantic-versioning:latest << COMMANDS
+          cp /usr/local/bin/git_semver /home/gitsemver_tool
+        COMMANDS
+        docker tag rcosnita/git-semantic-versioning:latest rcosnita/git-semantic-versioning:$(./gitsemver_tool/git_semver -shalength 8)
+        docker push rcosnita/git-semantic-versioning:$(./gitsemver_tool/git_semver -shalength 8)
     - name: Push the tagged Docker image
       run: docker push rcosnita/git-semantic-versioning:latest
 
@@ -41,7 +50,5 @@ jobs:
       run: docker build . --tag rcosnita/git-semantic-versioning:$GIT_TAG_NAME
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-    - name: Push the tagged Docker image
-      run: docker push rcosnita/git-semantic-versioning:$GIT_TAG_NAME
     - name: Push the tagged Docker image
       run: docker push rcosnita/git-semantic-versioning:$GIT_TAG_NAME
