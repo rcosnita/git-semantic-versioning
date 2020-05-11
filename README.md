@@ -29,3 +29,14 @@ cd <workspace>/build
 cmake -DCMAKE_BUILD_TYPE=release ../
 make -j8
 ```
+
+# Potential use cases
+
+* Continuous integration pipelines which must generate intermediate artefacts for continuous deployment.
+* Automatic tagging or code or docker images.
+
+You can either execute the docker container or simply download the binary for your OS flavour.
+
+## Next steps
+
+* [Release document](docs/release.md)

@@ -1,0 +1,20 @@
+@startuml
+
+participant "Contributor" as Dev
+control "git"
+control "Continuous Integration" as CI
+control "Git semver" as semver
+database "Artifactory / Docker registry" as Artifactory
+participant "Release manager" as RM
+
+Dev -> git: Commits new code.
+git -> CI: Notifies the CI about the changes.
+CI -> CI: Clone repository.
+CI -> CI: Executes tests.
+CI -> CI: Build artefacts.
+CI -> semver: Determines the next potential version.
+semver -> CI: Returns the current tag name or <semver>-<branchname>-<sha>
+CI -> Artifactory: Publishes the new artefacts.
+CI -> RM: Notifies the release manager about the new artefacts.
+
+@enduml
