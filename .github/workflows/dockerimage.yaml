@@ -20,7 +20,7 @@ jobs:
     - name: Build the Docker image.
       run: docker build . --tag rcosnita/git-semantic-versioning:latest
     - name: Build the Docker image for alpine.
-      run: docker build . -f Dockefile-alpine --tag rcosnita/git-semantic-versioning:latest-alpine
+      run: docker build . -f Dockerfile-alpine --tag rcosnita/git-semantic-versioning:latest-alpine
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Build the Docker semver image.
@@ -33,7 +33,9 @@ jobs:
           cp /usr/local/bin/git_semver /home/gitsemver_tool
         COMMANDS
         docker tag rcosnita/git-semantic-versioning:latest rcosnita/git-semantic-versioning:$(./gitsemver_tool/git_semver -shalength 8)
+        docker tag rcosnita/git-semantic-versioning:latest-alpine rcosnita/git-semantic-versioning:$(./gitsemver_tool/git_semver -shalength 8)-alpine
         docker push rcosnita/git-semantic-versioning:$(./gitsemver_tool/git_semver -shalength 8)
+        docker push rcosnita/git-semantic-versioning:$(./gitsemver_tool/git_semver -shalength 8)-alpine
     - name: Push the tagged Docker image
       run: docker push rcosnita/git-semantic-versioning:latest
     - name: Push the tagged Docker image alpine
