@@ -19,6 +19,8 @@ jobs:
         submodules: true
     - name: Build the Docker image.
       run: docker build . --tag rcosnita/git-semantic-versioning:latest
+    - name: Build the Docker image for alpine.
+      run: docker build . -f Dockefile-alpine --tag rcosnita/git-semantic-versioning:latest-alpine
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Build the Docker semver image.
@@ -34,6 +36,8 @@ jobs:
         docker push rcosnita/git-semantic-versioning:$(./gitsemver_tool/git_semver -shalength 8)
     - name: Push the tagged Docker image
       run: docker push rcosnita/git-semantic-versioning:latest
+    - name: Push the tagged Docker image alpine
+      run: docker push rcosnita/git-semantic-versioning:latest-alpine
 
   build-release:
     runs-on: ubuntu-latest
@@ -48,7 +52,11 @@ jobs:
       id: tagName
     - name: Build the Docker image.
       run: docker build . --tag rcosnita/git-semantic-versioning:$GIT_TAG_NAME
+    - name: Build the Docker image alpine.
+      run: docker build . -f Dockerfile-alpine --tag rcosnita/git-semantic-versioning:$GIT_TAG_NAME-alpine
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Push the tagged Docker image
       run: docker push rcosnita/git-semantic-versioning:$GIT_TAG_NAME
+    - name: Push the tagged Docker image alpine
+      run: docker push rcosnita/git-semantic-versioning:$GIT_TAG_NAME-alpine

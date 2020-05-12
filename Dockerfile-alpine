@@ -1,0 +1,19 @@
+FROM alpine:3.11.6 as build
+
+ADD . /home/git-semantic-versioning
+WORKDIR /home/git-semantic-versioning
+
+RUN apk update && \
+    apk add alpine-sdk clang cmake openssl openssl-dev
+
+RUN mkdir build && \
+    cd build && \
+    cmake -DCMAKE_BUILD_TYPE=release ../ && \
+    make -j8
+
+FROM alpine:3.11.6
+
+RUN apk update && apk add openssl libstdc++
+
+COPY --from=build /home/git-semantic-versioning/build/git_semver /home/git-semantic-versioning/git_semver
+COPY --from=build /home/git-semantic-versioning/build/git_semver /usr/local/bin/git_semver
