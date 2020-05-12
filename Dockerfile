@@ -17,3 +17,7 @@ COPY --from=build /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /usr/lib/x86_64-lin
 COPY --from=build /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/lib/x86_64-linux-gnu/libssl.so.1.1
 COPY --from=build /home/git-semantic-versioning/build/git_semver /home/git-semantic-versioning/git_semver
 COPY --from=build /home/git-semantic-versioning/build/git_semver /usr/local/bin/git_semver
+
+FROM alpine:latest
+
+COPY --from=build /home/git-semantic-versioning/build/git_semver /usr/local/bin/git_semver
