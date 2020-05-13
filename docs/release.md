@@ -35,4 +35,4 @@ The tool will always return the name of the tag because this is the stable relea
 
 Integrating the tool in your continuous integration pipeline is extremely simple and convenient:
 
-![Release CI](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/rcosnita/git-semantic-versioning/doc/docs/diagrams/release.puml)
+![Release CI](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/rcosnita/git-semantic-versioning/master/docs/diagrams/release.puml)
