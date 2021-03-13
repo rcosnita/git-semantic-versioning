@@ -52,6 +52,8 @@ jobs:
     - name: Get current tag name
       uses: olegtarasov/get-tag@v2
       id: tagName
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     - name: Build the Docker image.
       run: docker build . --tag rcosnita/git-semantic-versioning:$GIT_TAG_NAME
     - name: Build the Docker image alpine.
