@@ -86,7 +86,7 @@ namespace providers {
         /**
          * Returns the latest released tag for the underlining repository.
          */
-        GitTag lastReleasedTag();
+        GitTag lastReleasedTag(const std::string& tagsFilter);
 
         /**
          * Determines if the current head is a tag or not.

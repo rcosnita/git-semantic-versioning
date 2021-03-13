@@ -1,5 +1,6 @@
 build
 cmake-build-debug-with-additional-options
 cmake-build-debug
+cmake-build-release
 .DS_Store
 .idea

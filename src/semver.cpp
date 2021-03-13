@@ -1,5 +1,4 @@
 #include <string>
-#include <spdlog/spdlog.h>
 
 #include <providers/provider.h>
 #include <semver.h>
@@ -7,8 +6,8 @@
 namespace gitsemver {
     static const std::string DEFAULT_VERSION = "1.0.0";
 
-    std::string Semver::nextVersion() const {
-        auto tag = gitProvider_->lastReleasedTag();
+    std::string Semver::nextVersion(const std::string& tagsFilter) const {
+        auto tag = gitProvider_->lastReleasedTag(tagsFilter);
         if (tag == providers::NO_GIT_TAG) {
             return toSemanticVersionWithPrefix(DEFAULT_VERSION);
         }
