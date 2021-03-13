@@ -64,16 +64,27 @@ namespace providers {
         return "";
     }
 
-    GitTag GitProvider::lastReleasedTag() {
+    bool isMatchingTag(const std::regex& tagRegex, const GitTag& tag) {
+        return std::regex_match(tag.tagName(), tagRegex);
+    }
+
+    GitTag GitProvider::lastReleasedTag(const std::string& tagsFilter) {
         auto tags = listTags();
 
         std::sort(tags.begin(), tags.end(), [](GitTag a, GitTag b) {
             return a.time() > b.time();
         });
 
+
+        std::regex tagRegex(tagsFilter);
         TagsCollection semanticVersions;
-        std::copy_if(tags.begin(), tags.end(), std::back_inserter(semanticVersions), [](const GitTag& t) {
-            return !extractSemanticVersion(t.tagName()).empty();
+        std::copy_if(tags.begin(), tags.end(), std::back_inserter(semanticVersions),
+                     [&tagsFilter, &tagRegex](const GitTag& t) {
+            if (tagsFilter.empty()) {
+                return !extractSemanticVersion(t.tagName()).empty();;
+            }
+
+            return isMatchingTag(tagRegex, t) && !extractSemanticVersion(t.tagName()).empty();
         });
 
         if (semanticVersions.size() == 0) {

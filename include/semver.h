@@ -23,7 +23,7 @@ namespace gitsemver {
          * Branch name will be omitted for develop and master.
          * In case the tool is executed against a tag, the tag name will be returned.
          */
-        std::string nextVersion() const;
+        std::string nextVersion(const std::string& tagsFilter) const;
 
         virtual ~Semver() noexcept = default;
 
