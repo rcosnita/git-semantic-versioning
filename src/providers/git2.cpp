@@ -83,7 +83,7 @@ namespace providers {
             return std::move(sha);
         }
 
-        bool isTag() override {
+        bool isTag(std::string& tagName) override {
             git_reference* head;
             throwIfGit2Error(git_repository_head(&head, underliningRepo_));
             auto headPtr = createAutoDeleter(head, [](git_reference* h) {
@@ -101,8 +101,10 @@ namespace providers {
                 return t.lastCommitSha() == sha;
             });
 
+            tagName = "";
             if (it != tags.end()) {
                 spdlog::debug("Tag name is: {}", it->tagName());
+                tagName = it->tagName();
             }
 
             return it != tags.end();

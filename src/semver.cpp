@@ -12,11 +12,12 @@ namespace gitsemver {
             return toSemanticVersionWithPrefix(DEFAULT_VERSION);
         }
 
-        if (gitProvider_->isTag()) {
-            auto tagName = tag.tagName();
-            return tagName.replace(tagName.begin(),
-                tagName.begin() + providers::REF_TAGS_PREFIX_LENGTH + 1,
-                "");
+        std::string currBranchTagName = "";
+        if (gitProvider_->isTag(currBranchTagName)) {
+            return currBranchTagName.replace(
+                    currBranchTagName.begin(),
+                    currBranchTagName.begin() + providers::REF_TAGS_PREFIX_LENGTH + 1,
+                    "");
         }
 
         auto currVersion = providers::extractSemanticVersion(tag.tagName());
