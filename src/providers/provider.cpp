@@ -65,7 +65,8 @@ namespace providers {
     }
 
     bool isMatchingTag(const std::regex& tagRegex, const GitTag& tag) {
-        return std::regex_match(tag.tagName(), tagRegex);
+        auto isMatching = std::regex_match(tag.tagName(), tagRegex);
+        return isMatching;
     }
 
     GitTag GitProvider::lastReleasedTag(const std::string& tagsFilter) {

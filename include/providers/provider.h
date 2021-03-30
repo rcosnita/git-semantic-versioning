@@ -89,9 +89,10 @@ namespace providers {
         GitTag lastReleasedTag(const std::string& tagsFilter);
 
         /**
-         * Determines if the current head is a tag or not.
+         * Determines if the current head is a tag or not. In case it is the referenced argument will be set to the
+         * actual tag name. Otherwise, the tag name will remain empty.
          */
-        virtual bool isTag() = 0;
+        virtual bool isTag(std::string& tagName) = 0;
 
         /**
          * Retrieves the name of the current branch for the underlining repository.
